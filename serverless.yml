@@ -1,0 +1,61 @@
+service: serverless-next5
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+package:
+  individually: true
+
+custom:
+  serverless-offline:
+    port: 4000
+
+functions:
+  frontend:
+    handler: functions/frontend.handler
+    events:
+      - http:
+          method: get
+          path: /
+      - http:
+          method: get
+          path: /_next/{proxy+}
+    package:
+      include:
+        - ../.next/**
+        - ../static/**
+
+  api:
+    handler: functions/api.handler
+    events:
+      - http:
+          method: any
+          path: /api/{proxy+}
+          authorizer: authorization
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        Resource: "arn:aws:dynamodb:us-east-1:*:*"
+
+  authentication:
+    handler: functions/authentication.handler
+    events:
+      - http:
+          method: any
+          path: /authentication
+
+  authorization:
+    handler: functions/authorization.handler
+
+plugins:
+  - serverless-offline
+  - serverless-jest-plugin
+  - serverless-plugin-webpack

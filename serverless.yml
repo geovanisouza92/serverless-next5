@@ -58,4 +58,4 @@ functions:
 plugins:
   - serverless-offline
   - serverless-jest-plugin
-  - serverless-plugin-webpack
+  - serverless-webpack

@@ -1,7 +1,7 @@
 import React from "react";
 import Router from "next/router";
 
-export default class Index extends React.Component {
+export default class extends React.Component {
   static getInitialProps() {
     return {
       photos: new Array(15).map((v, i) => i + 1)
@@ -9,7 +9,7 @@ export default class Index extends React.Component {
   }
 
   constructor(props) {
-    setup(props);
+    super(props);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
@@ -48,8 +48,8 @@ export default class Index extends React.Component {
         {url.query.photoId && (
           <Modal id={url.query.photoId} onDismiss={() => this.dismissModal()} />
         )}
-        {photos.map(id => (
-          <div key={id} className="photo">
+        {photos.map((id, i) => (
+          <div key={i} className="photo">
             <a
               className="photoLink"
               href={`/photo?id=${id}`}
